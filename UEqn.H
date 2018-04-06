@@ -27,7 +27,7 @@
         
         //pZones.addResistance(UEqn, tTU.ref());
         volTensorField & AU = tTU.ref();
-        AU = AU + mu*D + (rho*mag(U))*F;
+        AU = AU + mu*D + (rho*mag(U))*F/2.0;
         AU.correctBoundaryConditions();
 
         trTU = inv(tTU());
@@ -53,7 +53,7 @@
         const scalarField& V = mesh.V();
         scalarField& Udiag = UEqn.diag();
         vectorField& Usource = UEqn.source();
-        const tensorField Cd = mu*D + (rho*mag(U))*F;
+        const tensorField Cd = mu*D + (rho*mag(U))*F/2.0;
         const scalarField isoCd = tr(Cd);
         Udiag += V*isoCd;
         Usource -= V*((Cd - I*isoCd) & U);
