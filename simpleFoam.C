@@ -34,8 +34,10 @@ Description
 #include "singlePhaseTransportModel.H"
 #include "kinematicMomentumTransportModel.H"
 #include "simpleControl.H"
-#include "IOporosityModelList.H"
-#include "fvOptions.H"
+#include "pressureReference.H"
+// #include "IOporosityModelList.H"
+#include "fvModels.H"
+#include "fvConstraints.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -43,16 +45,14 @@ int main(int argc, char *argv[])
 {
     #include "postProcess.H"
 
-    #include "setRootCase.H"
+    #include "setRootCaseLists.H"
     #include "createTime.H"
     #include "createMesh.H"
     #include "createControl.H"
     #include "createFields.H"
-    #include "createFvOptions.H"
     #include "initContinuityErrs.H"
 
     // const volScalarField& rho = mesh.lookupObject<volScalarField>("rho");
-    // const volScalarField& mu = mesh.lookupObject<volScalarField>("mu");
     const geometricOneField rho = geometricOneField();
     const volScalarField& mu = mesh.lookupObject<volScalarField>("nu");
 
@@ -80,7 +80,9 @@ int main(int argc, char *argv[])
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
-        // --- Pressure-velocity SIMPLE corrector
+        fvModels.correct();
+
+        // Pressure-velocity SIMPLE corrector
         {
             #include "UEqn.H"
             #include "pEqn.H"

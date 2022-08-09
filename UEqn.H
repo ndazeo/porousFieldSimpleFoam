@@ -8,7 +8,7 @@
       + MRF.DDt(U)
       + turbulence->divDevSigma(U)
       ==
-        fvOptions(U)
+        fvModels.source(U)
     );
     fvVectorMatrix& UEqn = tUEqn.ref();
 
@@ -33,7 +33,7 @@
         trTU = inv(tTU());
         trTU.ref().rename("rAU");
 
-        fvOptions.constrain(UEqn);
+        fvConstraints.constrain(UEqn);
 
         volVectorField gradp(fvc::grad(p));
 
@@ -43,7 +43,7 @@
         }
         U.correctBoundaryConditions();
 
-        fvOptions.correct(U);
+        fvConstraints.constrain(U);
     }
     else
     {
@@ -58,11 +58,11 @@
         Udiag += V*isoCd;
         Usource -= V*((Cd - I*isoCd) & U);
 
-        fvOptions.constrain(UEqn);
+        fvConstraints.constrain(UEqn);
 
         solve(UEqn == -fvc::grad(p));
 
-        fvOptions.correct(U);
+        fvConstraints.constrain(U);
 
         trAU = 1.0/UEqn.A();
         trAU.ref().rename("rAU");
